@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ultimate AI Code Reviewer | Professional Bug Detector & Optimizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --secondary-dark: #db2777;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --warning-dark: #d97706;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --info: #3b82f6;
+            --dark: #0f172a;
+            --dark-2: #1e293b;
+            --dark-3: #334155;
+            --light: #f8fafc;
+            --light-2: #f1f5f9;
+            --light-3: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
+            margin: 20px;
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(20px);
+            border-radius: 60px;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-brand i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-brand span {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .status-badge {
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: var(--success);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            padding: 48px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--dark-3);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 32px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.1));
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.85rem;
+            color: var(--dark-3);
+            margin-top: 8px;
+        }
+
+        /* Main Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            padding: 28px 32px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(236, 72, 153, 0.1));
+            border-bottom: 2px solid rgba(79, 70, 229, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .feature-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .feature-tag {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .card-body {
+            padding: 32px;
+        }
+
+        /* Editor Area */
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .lang-select {
+            padding: 12px 20px;
+            border: 2px solid var(--light-3);
+            border-radius: 16px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 2px solid var(--light-3);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .code-editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            background: #1e293b;
+            color: #e2e8f0;
+            border: none;
+            border-radius: 20px;
+            resize: vertical;
+        }
+
+        .code-editor:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+        }
+
+        .editor-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--light-2);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--dark-3);
+        }
+
+        /* Analysis Options */
+        .analysis-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+            padding: 20px;
+            background: var(--light-2);
+            border-radius: 20px;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-group label {
+            font-weight: 700;
+            color: var(--dark-2);
+        }
+
+        .option-select {
+            padding: 12px;
+            border: 2px solid var(--light-3);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px 32px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 32px;
+        }
+
+        .results-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border-radius: 40px;
+            border: none;
+            background: var(--light-2);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--light-2);
+            border-radius: 20px;
+            padding: 24px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .result-box {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .result-box h1, .result-box h2, .result-box h3 {
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .result-box h1 { color: var(--primary); border-left: 4px solid var(--primary); padding-left: 16px; }
+        .result-box h2 { color: var(--secondary); border-left: 4px solid var(--secondary); padding-left: 14px; }
+        .result-box h3 { color: var(--primary-dark); border-left: 4px solid var(--primary-dark); padding-left: 12px; }
+
+        .result-box pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        .result-box code {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .severity-critical { color: var(--danger); font-weight: bold; }
+        .severity-warning { color: var(--warning); font-weight: bold; }
+        .severity-info { color: var(--info); font-weight: bold; }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--light-3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toast {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { margin: 10px; padding: 12px 20px; }
+            .hero { padding: 32px 20px; }
+            .hero h1 { font-size: 2rem; }
+            .card-header { flex-direction: column; text-align: center; }
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-brain"></i>
+            <span>Ultimate AI Code Reviewer</span>
+        </div>
+        <div class="status-badge">
+            <i class="fas fa-check-circle"></i>
+            <span>Enterprise Grade</span>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1><i class="fas fa-code"></i> AI-Powered Code Reviewer</h1>
+            <p>Advanced bug detection, security analysis, performance optimization, and intelligent code correction powered by Groq AI</p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-language"></i>
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Languages Supported</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Analysis Types</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">AI-Powered</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-rocket"></i>
+                    <div class="stat-number">Real-time</div>
+                    <div class="stat-label">Analysis</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Code Reviewer Card -->
+        <div class="glass-card">
+            <div class="card-header">
+                <h2><i class="fas fa-terminal"></i> Code Analysis Workspace</h2>
+                <div class="feature-tags">
+                    <span class="feature-tag"><i class="fas fa-bug"></i> Bug Detection</span>
+                    <span class="feature-tag"><i class="fas fa-shield-alt"></i> Security Scan</span>
+                    <span class="feature-tag"><i class="fas fa-tachometer-alt"></i> Performance</span>
+                    <span class="feature-tag"><i class="fas fa-chart-simple"></i> Complexity</span>
+                    <span class="feature-tag"><i class="fas fa-code-branch"></i> Best Practices</span>
+                    <span class="feature-tag"><i class="fas fa-magic"></i> Auto-Fix</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="editor-header">
+                    <select class="lang-select" id="languageSelect">
+                        <option value="python">🐍 Python</option>
+                        <option value="javascript">⚡ JavaScript</option>
+                        <option value="typescript">🔷 TypeScript</option>
+                        <option value="java">☕ Java</option>
+                        <option value="cpp">🔷 C++</option>
+                        <option value="csharp">💜 C#</option>
+                        <option value="go">🐹 Go</option>
+                        <option value="rust">🦀 Rust</option>
+                        <option value="php">🐘 PHP</option>
+                        <option value="ruby">💎 Ruby</option>
+                        <option value="swift">🍎 Swift</option>
+                        <option value="kotlin">🟣 Kotlin</option>
+                        <option value="html">🌐 HTML/CSS</option>
+                        <option value="sql">🗄️ SQL</option>
+                        <option value="bash">🐚 Bash/Shell</option>
+                    </select>
+                    <div class="editor-actions">
+                        <button class="icon-btn" onclick="loadSample()"><i class="fas fa-file-code"></i> Sample</button>
+                        <button class="icon-btn" onclick="clearEditor()"><i class="fas fa-trash-alt"></i> Clear</button>
+                        <button class="icon-btn" onclick="copyCode()"><i class="fas fa-copy"></i> Copy</button>
+                    </div>
+                </div>
+                <textarea class="code-editor" id="codeEditor" placeholder="Paste your code here for comprehensive AI analysis..."></textarea>
+                <div class="editor-footer">
+                    <span><i class="fas fa-code"></i> <span id="lineCount">0</span> lines</span>
+                    <span><i class="fas fa-font"></i> <span id="charCount">0</span> characters</span>
+                    <span><i class="fas fa-language"></i> <span id="currentLang">Python</span></span>
+                </div>
+
+                <!-- Analysis Options -->
+                <div class="analysis-options">
+                    <div class="option-group">
+                        <label><i class="fas fa-chart-bar"></i> Analysis Depth</label>
+                        <select class="option-select" id="analysisDepth">
+                            <option value="basic">📋 Basic - Quick Scan (30s)</option>
+                            <option value="detailed" selected>🔍 Detailed - Full Analysis (45s)</option>
+                            <option value="expert">🎯 Expert - Deep Audit (60s)</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label><i class="fas fa-filter"></i> Focus Areas</label>
+                        <select class="option-select" id="focusArea">
+                            <option value="all">🎯 All Areas</option>
+                            <option value="bugs">🐛 Bugs Only</option>
+                            <option value="security">🔒 Security Only</option>
+                            <option value="performance">⚡ Performance Only</option>
+                            <option value="quality">📝 Code Quality Only</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label><i class="fas fa-code-branch"></i> Output Format</label>
+                        <select class="option-select" id="outputFormat">
+                            <option value="detailed">📊 Detailed Report</option>
+                            <option value="concise">📄 Concise Summary</option>
+                            <option value="technical">🔧 Technical Deep Dive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="analyze-btn" onclick="analyzeCode()">
+                    <i class="fas fa-microchip"></i>
+                    <span>Analyze Code with AI</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <!-- Results Section -->
+                <div class="results-section">
+                    <div class="results-tabs">
+                        <button class="tab-btn active" onclick="switchTab('analysis')"><i class="fas fa-chart-line"></i> Analysis</button>
+                        <button class="tab-btn" onclick="switchTab('corrected')"><i class="fas fa-code"></i> Corrected Code</button>
+                        <button class="tab-btn" onclick="switchTab('security')"><i class="fas fa-shield-alt"></i> Security Report</button>
+                        <button class="tab-btn" onclick="switchTab('metrics')"><i class="fas fa-chart-simple"></i> Metrics</button>
+                        <button class="tab-btn" onclick="switchTab('explanation')"><i class="fas fa-graduation-cap"></i> Explanation</button>
+                    </div>
+
+                    <div id="analysisTab" class="tab-content active">
+                        <div class="result-box" id="analysisResult">
+                            <div style="text-align: center; padding: 60px;">
+                                <i class="fas fa-info-circle" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px; display: block;"></i>
+                                <h3>Ready to Analyze</h3>
+                                <p>Paste your code above, select analysis options, and click "Analyze Code" to get a comprehensive AI-powered review.</p>
+                                <div style="margin-top: 30px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                                    <div><i class="fas fa-bug"></i> Bug Detection</div>
+                                    <div><i class="fas fa-shield-alt"></i> Security Scan</div>
+                                    <div><i class="fas fa-tachometer-alt"></i> Performance</div>
+                                    <div><i class="fas fa-chart-simple"></i> Complexity</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="correctedTab" class="tab-content">
+                        <div class="result-box" id="correctedResult">Waiting for analysis...</div>
+                    </div>
+
+                    <div id="securityTab" class="tab-content">
+                        <div class="result-box" id="securityResult">Waiting for analysis...</div>
+                    </div>
+
+                    <div id="metricsTab" class="tab-content">
+                        <div class="result-box" id="metricsResult">Waiting for analysis...</div>
+                    </div>
+
+                    <div id="explanationTab" class="tab-content">
+                        <div class="result-box" id="explanationResult">Waiting for analysis...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // ==================== CONFIGURE YOUR API KEY HERE ====================
+        // 🔑 PASTE YOUR GROQ API KEY BELOW (starts with gsk_)
+        const GROQ_API_KEY = "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";
+        // ====================================================================
+        
+        const GROQ_MODEL = "llama-3.3-70b-versatile";
+        const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+
+        // Sample code snippets for different languages
+        const samples = {
+            python: `def calculate_average(numbers):
+    total = 0
+    for i in range(len(numbers)):
+        total += numbers[i]
+    return total / len(numbers)
+
+def get_user_data(user_id):
+    query = f"SELECT * FROM users WHERE id = {user_id}"
+    return execute_query(query)
+
+def process_list(items):
+    result = []
+    for item in items:
+        if item > 0:
+            result.append(item * 2)
+    return result`,
+            javascript: `function calculateAverage(numbers) {
+    let total = 0;
+    for(let i = 0; i <= numbers.length; i++) {
+        total += numbers[i];
+    }
+    return total / numbers.length;
+}
+
+function getUserData(userId) {
+    const query = "SELECT * FROM users WHERE id = " + userId;
+    return executeQuery(query);
+}`,
+            java: `public class Calculator {
+    public static int divide(int a, int b) {
+        return a / b;
+    }
+    
+    public static String getUserData(int userId) {
+        String query = "SELECT * FROM users WHERE id = " + userId;
+        return executeQuery(query);
+    }
+}`
+        };
+
+        // DOM Elements
+        const codeEditor = document.getElementById('codeEditor');
+        const languageSelect = document.getElementById('languageSelect');
+        const lineCountSpan = document.getElementById('lineCount');
+        const charCountSpan = document.getElementById('charCount');
+        const currentLangSpan = document.getElementById('currentLang');
+
+        // Update counters
+        function updateCounters() {
+            const code = codeEditor.value;
+            const lines = code.split('\n').length;
+            const chars = code.length;
+            lineCountSpan.textContent = lines;
+            charCountSpan.textContent = chars;
+        }
+
+        codeEditor.addEventListener('input', updateCounters);
+        languageSelect.addEventListener('change', () => {
+            const selected = languageSelect.options[languageSelect.selectedIndex].text;
+            currentLangSpan.textContent = selected.replace(/[^a-zA-Z+# ]/g, '').trim();
+        });
+
+        // Load sample code
+        function loadSample() {
+            const lang = languageSelect.value;
+            const sample = samples[lang] || samples.python;
+            codeEditor.value = sample;
+            updateCounters();
+            showToast('Sample code loaded!', 'success');
+        }
+
+        // Clear editor
+        function clearEditor() {
+            codeEditor.value = '';
+            updateCounters();
+            showToast('Editor cleared', 'info');
+        }
+
+        // Copy code
+        function copyCode() {
+            codeEditor.select();
+            document.execCommand('copy');
+            showToast('Code copied to clipboard!', 'success');
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            const tabs = ['analysis', 'corrected', 'security', 'metrics', 'explanation'];
+            tabs.forEach(tab => {
+                const tabContent = document.getElementById(`${tab}Tab`);
+                const tabBtn = document.querySelector(`.tab-btn:nth-child(${tabs.indexOf(tab) + 1})`);
+                if (tab === tabName) {
+                    tabContent.classList.add('active');
+                    if (tabBtn) tabBtn.classList.add('active');
+                } else {
+                    tabContent.classList.remove('active');
+                    if (tabBtn) tabBtn.classList.remove('active');
+                }
+            });
+        }
+
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // Rate limiting
+        let lastCallTime = 0;
+        const MIN_INTERVAL = 2000;
+
+        // API Call Function
+        async function callGroqAPI(prompt, systemPrompt) {
+            if (!GROQ_API_KEY || GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE") {
+                showToast('Please configure your Groq API key in the script (line ~500)', 'error');
+                throw new Error('API key not configured');
+            }
+
+            const now = Date.now();
+            if (now - lastCallTime < MIN_INTERVAL) {
+                await new Promise(resolve => setTimeout(resolve, MIN_INTERVAL - (now - lastCallTime)));
+            }
+            lastCallTime = Date.now();
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+                const response = await fetch(GROQ_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${GROQ_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: GROQ_MODEL,
+                        messages: [
+                            { role: "system", content: systemPrompt },
+                            { role: "user", content: prompt.substring(0, 12000) }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 4096,
+                        top_p: 1,
+                        stream: false
+                    }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error?.message || `API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timeout - please try again');
+                }
+                throw error;
+            }
+        }
+
+        // Format response
+        function formatResponse(text) {
+            if (!text) return '<p>No response received</p>';
+            let html = text;
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            html = html.replace(/🔴/g, '<span class="severity-critical">🔴</span>');
+            html = html.replace(/🟡/g, '<span class="severity-warning">🟡</span>');
+            html = html.replace(/🔵/g, '<span class="severity-info">🔵</span>');
+            html = html.replace(/^\s*\d+\.\s+(.*$)/gim, '<li>$1</li>');
+            html = html.replace(/^\s*[-•]\s+(.*$)/gim, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+            html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code class="language-$1">$2</code></pre>');
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            html = html.replace(/\n/g, '<br>');
+            html = html.replace(/(<br>){3,}/g, '<br><br>');
+            return html;
+        }
+
+        // Main Analysis Function
+        async function analyzeCode() {
+            const code = codeEditor.value;
+            const language = languageSelect.value;
+            const depth = document.getElementById('analysisDepth').value;
+            const focus = document.getElementById('focusArea').value;
+            const format = document.getElementById('outputFormat').value;
+
+            if (!code) {
+                showToast('Please paste some code to analyze', 'warning');
+                return;
+            }
+
+            // Show loading in all tabs
+            const loadingHTML = '<div class="loading-overlay"><div class="spinner"></div><div>AI is analyzing your code...</div></div>';
+            document.getElementById('analysisResult').innerHTML = loadingHTML;
+            document.getElementById('correctedResult').innerHTML = loadingHTML;
+            document.getElementById('securityResult').innerHTML = loadingHTML;
+            document.getElementById('metricsResult').innerHTML = loadingHTML;
+            document.getElementById('explanationResult').innerHTML = loadingHTML;
+
+            const depthMap = {
+                basic: "Quick scan focusing on critical issues only",
+                detailed: "Comprehensive analysis covering all aspects",
+                expert: "Deep audit including architectural review"
+            };
+
+            const focusMap = {
+                all: "Analyze all aspects including bugs, security, performance, and code quality",
+                bugs: "Focus primarily on finding and explaining bugs",
+                security: "Focus primarily on security vulnerabilities",
+                performance: "Focus primarily on performance issues and optimization",
+                quality: "Focus primarily on code quality and best practices"
+            };
+
+            const formatMap = {
+                detailed: "Provide a detailed, comprehensive report with explanations",
+                concise: "Provide a concise summary focusing on key findings",
+                technical: "Provide a technical deep dive with specific metrics"
+            };
+
+            const prompt = `Perform a ${depth} level code review on this ${language} code.
+
+Code to analyze:
+\`\`\`${language}
+${code}
+\`\`\`
+
+Focus Area: ${focusMap[focus]}
+Output Format: ${formatMap[format]}
+
+Please provide a comprehensive analysis with the following sections:
+
+## 📊 Executive Summary
+(2-3 sentences overview of code quality)
+
+## 🐛 Bugs & Issues Found
+List each issue with:
+- Severity: 🔴 Critical / 🟡 Warning / 🔵 Suggestion
+- Description of the issue
+- Why it's problematic
+- How to fix it
+
+## 🔒 Security Vulnerabilities
+(If any security issues found, list with severity and fixes)
+
+## ⚡ Performance Analysis
+- Performance bottlenecks identified
+- Optimization suggestions
+- Expected performance improvement
+
+## 📈 Code Quality Assessment
+- Naming conventions
+- Code structure
+- Comments and documentation
+- Best practices adherence
+
+## ✅ Corrected Code
+\`\`\`${language}
+[Provide the complete corrected version of the code with all fixes applied]
+\`\`\`
+
+## 📊 Complexity Metrics
+- Time Complexity: O(?)
+- Space Complexity: O(?)
+- Cyclomatic Complexity: (Number)
+- Maintainability Index: (Score out of 100)
+
+## 🎓 Learning Points
+(What the developer should learn from this review)
+
+## 💡 Best Practices Applied in Correction
+(List of best practices implemented in the corrected code)
+
+Make the response well-structured, educational, and actionable.`;
+
+            try {
+                const response = await callGroqAPI(prompt, "You are an expert software engineer with 20+ years of experience. Provide thorough, educational code reviews.");
+
+                // Parse response into sections
+                const analysisHTML = formatResponse(response);
+                
+                // Extract corrected code section
+                const correctedMatch = response.match(/## ✅ Corrected Code\s*```(?:\w+)?\s*([\s\S]*?)```/i);
+                const correctedCode = correctedMatch ? correctedMatch[1] : 'Could not extract corrected code';
+                
+                // Extract security section
+                const securityMatch = response.match(/## 🔒 Security Vulnerabilities([\s\S]*?)(?=## |$)/i);
+                const securitySection = securityMatch ? securityMatch[1] : 'No security issues found';
+                
+                // Extract metrics section
+                const metricsMatch = response.match(/## 📊 Complexity Metrics([\s\S]*?)(?=## |$)/i);
+                const metricsSection = metricsMatch ? metricsMatch[1] : 'Metrics calculated';
+                
+                // Extract explanation/learning section
+                const learningMatch = response.match(/## 🎓 Learning Points([\s\S]*?)(?=## |$)/i);
+                const learningSection = learningMatch ? learningMatch[1] : 'Review complete';
+
+                // Update all tabs
+                document.getElementById('analysisResult').innerHTML = analysisHTML;
+                document.getElementById('correctedResult').innerHTML = `<pre><code>${escapeHtml(correctedCode)}</code></pre>`;
+                document.getElementById('securityResult').innerHTML = formatResponse(securitySection);
+                document.getElementById('metricsResult').innerHTML = formatResponse(metricsSection);
+                document.getElementById('explanationResult').innerHTML = formatResponse(learningSection);
+
+                showToast('Analysis complete! Check all tabs for detailed results', 'success');
+            } catch (error) {
+                const errorHTML = `<div style="text-align:center;padding:40px"><i class="fas fa-exclamation-triangle" style="font-size:3rem;color:var(--danger)"></i><h3>Error</h3><p>${error.message}</p><p>Please check your API key and try again.</p></div>`;
+                document.getElementById('analysisResult').innerHTML = errorHTML;
+                document.getElementById('correctedResult').innerHTML = errorHTML;
+                document.getElementById('securityResult').innerHTML = errorHTML;
+                document.getElementById('metricsResult').innerHTML = errorHTML;
+                document.getElementById('explanationResult').innerHTML = errorHTML;
+                showToast(error.message, 'error');
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // Initialize
+        updateCounters();
+        
+        if (GROQ_API_KEY && GROQ_API_KEY !== "YOUR_GROQ_API_KEY_HERE") {
+            showToast('✅ AI Code Reviewer is ready! Paste your code and click analyze.', 'success');
+        } else {
+            showToast('⚠️ Please configure your Groq API key in the script (line ~500)', 'warning');
+        }
+    </script>
+</body>
+</html>
